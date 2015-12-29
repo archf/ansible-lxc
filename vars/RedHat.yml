@@ -1,0 +1,6 @@
+---
+
+lxc_packages:
+  - lxc
+  - lxc-extra
+  - lxc-templates

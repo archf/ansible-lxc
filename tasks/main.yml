@@ -1,0 +1,44 @@
+---
+# tasks file for ansible-lxc
+
+# specify the packages and the packager to use
+- name: load OS specific variables (see ../vars/*)
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: install packages
+  action: "{{ ansible_pkg_mgr }} pkg={{ item }} state={{ lxc_pkg_state }}"
+  with_items: lxc_packages
+
+  # LXC configuration is split in two parts:
+  #   - container ( /etc/lxc/default.conf | ~/.config/lxc/default.conf )
+  #   - system  ( /etc/lxc/lxc.conf | ~/.config/lxc/lxc.conf )
+  #
+  # And:
+  #   - /etc/lxc/lxc-usernet (unprivileged user network administration file)
+
+- name: template /etc/lxc/default.conf (default container configuration)
+  template:
+    src: default.conf.j2
+    dest: /etc/lxc/default.conf
+    backup: yes
+    mode: 0600
+    owner: root
+    group: root
+
+- name: template /etc/lxc/lxc.conf (default sytem-wide configuration)
+  template:
+    src: lxc.conf.j2
+    backup: yes
+    dest: /etc/lxc/lxc.conf
+    mode: 0600
+    owner: root
+    group: root
+
+- name: template /etc/lxc/lxc-usernet (unprivileged user network administration file)
+  template:
+    src: lxc-usernet.j2
+    dest: /etc/lxc/lxc-usernet
+    backup: yes
+    mode: 0600
+    owner: root
+    group: root

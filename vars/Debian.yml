@@ -1,0 +1,7 @@
+
+---
+
+lxc_packages:
+  - lxc
+  - lxc-templates
+  - python3-lxc
