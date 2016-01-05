@@ -2,3 +2,42 @@
 # defaults file for ansible-lxc
 
 lxc_pkg_state: installed
+
+# container defaults (defaults.conf)
+# /etc/lxc/default.conf | ~/.config/lxc/default.conf
+lxc_network_type: veth
+lxc_network_link: lxcbr0
+lxc_network_flags: up
+lxc_network_hwaddr: '00:16:3e:xx:xx:xx'
+
+# lxc.conf defaults
+# /etc/lxc/lxc.conf | ~/.config/lxc/lxc.conf
+
+# backend storage
+# lxc_bdev_lvm_vg: lxc
+# location in which all containers are stored
+# lxc_lxcpath: /var/lib/lxc
+# path to the default container configuration
+# lxc_default_config: /etc/lxc/default.conf ||  ~/.config/lxc/default.conf
+
+# lxc container network
+lxc_net_bridge: lxcbr0
+lxc_net_bridge_port: none
+lxc_net_addr: 10.0.3.1
+lxc_net_netmask: 255.255.255.0
+lxc_net_network: 10.0.3.0/24
+#lxc_net_mtu: 1500
+
+# # if "none" no gateway will on the LXC bridge, nat must
+# # be "false" to use a gateway.
+# lxc_net_gateway: none
+
+# # lxc container nat enabled
+# lxc_net_nat: true  ## If "true" nat rules will be created with the lxc network.
+
+# lxc container dhcp settings
+lxc_net_dhcp_range: 10.0.3.2,10.0.3.253
+lxc_net_dhcp_max: 253
+lxc_net_dhcp_config: ''
+lxc_net_dnsmasq_user: lxc-dnsmasq
+lxc_net_domain: ''

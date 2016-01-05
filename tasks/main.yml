@@ -1,9 +1,15 @@
 ---
 # tasks file for ansible-lxc
 
-# specify the packages and the packager to use
+# specify the packages to install
 - name: load OS specific variables (see ../vars/*)
   include_vars: "{{ ansible_os_family }}.yml"
+
+- name: install ubuntu ppa
+  apt_repository:
+    repo: 'ppa:ubuntu-lxc/lxc-stable'
+    state: present
+  when: ansible_distribution == 'Ubuntu'
 
 - name: install packages
   action: "{{ ansible_pkg_mgr }} pkg={{ item }} state={{ lxc_pkg_state }}"
@@ -16,21 +22,43 @@
   # And:
   #   - /etc/lxc/lxc-usernet (unprivileged user network administration file)
 
-- name: template /etc/lxc/default.conf (default container configuration)
+# file is placed inside user home to allow creation of unprivileged containers
+- name: template ~/.config/lxc/default.conf (user default container conf)
+  template:
+    src: default.conf.j2
+    dest: "/home/{{ item }}/.config/lxc/default.conf"
+    backup: yes
+    mode: 0644
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  with_items: lxc_users
+
+# file is placed inside user home to allow creation of unprivileged containers
+- name: template ~/.config/lxc/lxc.conf (path and storage BE)
+  template:
+    src: lxc.conf.j2
+    dest: "/home/{{ item }}/.config/lxc/lxc.conf"
+    backup: yes
+    mode: 0644
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  with_items: lxc_users
+
+- name: template /etc/lxc/default.conf (system-wide default container conf)
   template:
     src: default.conf.j2
     dest: /etc/lxc/default.conf
     backup: yes
-    mode: 0600
+    mode: 0644
     owner: root
     group: root
 
-- name: template /etc/lxc/lxc.conf (default sytem-wide configuration)
+- name: template /etc/lxc/lxc.conf (path and storage BE)
   template:
     src: lxc.conf.j2
-    backup: yes
     dest: /etc/lxc/lxc.conf
-    mode: 0600
+    backup: yes
+    mode: 0644
     owner: root
     group: root
 
@@ -39,6 +67,32 @@
     src: lxc-usernet.j2
     dest: /etc/lxc/lxc-usernet
     backup: yes
-    mode: 0600
+    mode: 0644
     owner: root
     group: root
+
+# # this is to run unprivileged containers
+# # fixme: allocate additional uids & and gids to a username
+# sudo usermod --add-subuids 100000-165536 username
+# sudo usermod --add-subgids 100000-165536 username
+
+# see config/init/common/lxc-net.in script inside lxc github repos for details
+# of lxcbr0 bridge instantiation.
+
+# - name: Ensure networking includes interfaces.d
+#   lineinfile:
+#     dest: "/etc/network/interfaces"
+#     line: "source /etc/network/interfaces.d/*.conf"
+#     backup: "yes"
+#   when: ansible_distribution == 'Ubuntu'
+
+# - name: Template lxc bridge configuration
+#   template:
+#     src: "{{ item.src }}"
+#     dest: "{{ item.dest }}"
+#     owner: "{{ item.owner|default('root') }}"
+#     group: "{{ item.group|default('root') }}"
+#     mode: "{{ item.mode|default('0644') }}"
+#   with_items:
+#   - { src: lxc-bridge.cfg.j2, dest: "/etc/network/interfaces.d/lxc-bridge.cfg" }
+#   when: ansible_distribution == 'Ubuntu'
