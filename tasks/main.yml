@@ -15,6 +15,17 @@
   action: "{{ ansible_pkg_mgr }} pkg={{ item }} state={{ lxc_pkg_state }}"
   with_items: lxc_packages
 
+- name: create missing directories
+  file:
+    path: /home/{{ item[0] }}/{{ item[1] }}
+    owner: "{{ item[0] }}"
+    group: "{{ item[0] }}"
+    mode: 0644
+    state: directory
+  with_nested:
+    - "{{ lxc_users }}"
+    - "{{ lxc_directories }}"
+
   # LXC configuration is split in two parts:
   #   - container ( /etc/lxc/default.conf | ~/.config/lxc/default.conf )
   #   - system  ( /etc/lxc/lxc.conf | ~/.config/lxc/lxc.conf )

@@ -3,6 +3,12 @@
 
 lxc_pkg_state: installed
 
+lxc_directories:
+  - '.local/share/lxc'
+  - '.local/share/lxcsnaps'
+  - '.cache/lxc'
+  - '.config/lxc'
+
 # container defaults (defaults.conf)
 # /etc/lxc/default.conf | ~/.config/lxc/default.conf
 lxc_network_type: veth
