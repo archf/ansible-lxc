@@ -74,3 +74,9 @@ lxc.network.flags = {{ lxc_network_flags }}
 # in address will be replaced by random value, this allows setting
 # hwaddr templates.
 lxc.network.hwaddr = {{ lxc_network_hwaddr }}
+
+# values should match those found in /etc/subuid and /etc/subgid
+# those below are expected for the first user on a standard Ubuntu system
+{# fixme: detect and generate those 2 strings #}
+lxc.id_map = u 0 100000 65536
+lxc.id_map = g 0 100000 65536
