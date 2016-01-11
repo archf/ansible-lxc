@@ -17,15 +17,14 @@
 
 - name: create missing directories in each lxc administrator account
   file:
-    path: /home/{{ item[0].name }}/{{ item[1] }}
-    owner: "{{ item[0].name }}"
-    group: "{{ item[0].name }}"
+    path: /home/{{ item[0] }}/{{ item[1] }}
+    owner: "{{ item[0] }}"
+    group: "{{ item[0] }}"
     mode: 0755
     state: directory
   with_nested:
-    - "{{ users }}"
+    - "{{ lxc_users }}"
     - "{{ lxc_directories }}"
-  when: lxc_admin == yes
 
 - name: create missing files
   file:
@@ -50,25 +49,23 @@
 - name: template ~/.config/lxc/default.conf (user default container conf)
   template:
     src: user_default.conf.j2
-    dest: "/home/{{ item.name }}/.config/lxc/default.conf"
+    dest: "/home/{{ item }}/.config/lxc/default.conf"
     backup: yes
     mode: 0644
-    owner: "{{ item.name }}"
-    group: "{{ item.name }}"
-  with_items: users
-  when: lxc_admin == yes
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  with_items: lxc_users
 
 # file is placed inside user home to allow creation of unprivileged containers
 - name: template ~/.config/lxc/lxc.conf (path and storage BE)
   template:
     src: lxc.conf.j2
-    dest: "/home/{{ item.name }}/.config/lxc/lxc.conf"
+    dest: "/home/{{ item }}/.config/lxc/lxc.conf"
     backup: yes
     mode: 0644
-    owner: "{{ item.name }}"
-    group: "{{ item.name }}"
-  with_items: users
-  when: item.lxc_admin == yes
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  with_items: lxc_users
 
 - name: template /etc/lxc/default.conf (system-wide default container conf)
   template:
