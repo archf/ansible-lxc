@@ -74,3 +74,9 @@ lxc.network.flags = {{ lxc_network_flags }}
 # in address will be replaced by random value, this allows setting
 # hwaddr templates.
 lxc.network.hwaddr = {{ lxc_network_hwaddr }}
+
+#ipv6  address  to  use as the gateway inside the container
+#auto: take the primary address from the bridge interface
+#      (as specified by the lxc.network.link option)
+#       only available when using the veth and macvlan network types
+lxc.network.ipv6.gateway = {{ lxc_network_ipv6_gateway }}

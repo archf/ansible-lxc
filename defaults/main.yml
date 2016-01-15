@@ -3,6 +3,8 @@
 
 lxc_pkg_state: installed
 
+private_dir: "{{ playbook_dir }}/private"
+
 lxc_directories:
   - '.local/share/lxc'
   - '.local/share/lxcsnaps'
@@ -15,6 +17,7 @@ lxc_network_type: veth
 lxc_network_link: lxcbr0
 lxc_network_flags: up
 lxc_network_hwaddr: '00:16:3e:xx:xx:xx'
+lxc_network_ipv6_gateway: auto
 
 # lxc.conf defaults
 # /etc/lxc/lxc.conf | ~/.config/lxc/lxc.conf
