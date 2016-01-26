@@ -1,6 +1,6 @@
 ---
 
-lxc_packages:
+lxc_pkgs:
   - lxc
   - lxc-extra
   - lxc-templates

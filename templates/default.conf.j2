@@ -1,6 +1,4 @@
-#
 # {{ ansible_managed }}
-#
 
 # See man lxc.container.conf
 
@@ -80,3 +78,14 @@ lxc.network.hwaddr = {{ lxc_network_hwaddr }}
 #      (as specified by the lxc.network.link option)
 #       only available when using the veth and macvlan network types
 lxc.network.ipv6.gateway = {{ lxc_network_ipv6_gateway }}
+
+{#
+## Limits
+lxc.cgroup.cpuset.cpus                 = <cpu>
+lxc.cgroup.memory.limit_in_bytes       = <ram>
+lxc.cgroup.memory.memsw.limit_in_bytes = <swap>
+lxc.cgroup.blkio.weight                = <iosched>
+
+# Autostart
+lxc.start.auto                         = <autostart>
+#}

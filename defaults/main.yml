@@ -5,6 +5,7 @@ lxc_pkg_state: installed
 
 private_dir: "{{ playbook_dir }}/private"
 
+# upriviledged users directory to create
 lxc_directories:
   - '.local/share/lxc'
   - '.local/share/lxcsnaps'
@@ -29,24 +30,28 @@ lxc_network_ipv6_gateway: auto
 # path to the default container configuration
 # lxc_default_config: /etc/lxc/default.conf ||  ~/.config/lxc/default.conf
 
-# lxc container network
-lxc_net_bridge: lxcbr0
-lxc_net_bridge_port: none
-lxc_net_addr: 10.0.3.1
-lxc_net_netmask: 255.255.255.0
-lxc_net_network: 10.0.3.0/24
-#lxc_net_mtu: 1500
+# lxc-net defaults
+# lxc_bridge_port: none
+
+# lxc_use_bridge: yes
+# lxc_bridge: lxcbr0
+# lxc_ipv4: 10.0.3.1/24
+# lxc_ipv6: fd4b:93da:8643:3046::1/64
+# lxc_ipv6_nat: yes
+
+# lxc_netmask: 255.255.255.0
+# lxc_network: 10.0.3.0/24
+#lxc_mtu: 1500
 
 # # if "none" no gateway will on the LXC bridge, nat must
 # # be "false" to use a gateway.
-# lxc_net_gateway: none
+# lxc_gateway: none
 
 # # lxc container nat enabled
-# lxc_net_nat: true  ## If "true" nat rules will be created with the lxc network.
+# lxc_nat: true  ## If "true" nat rules will be created with the lxc network.
 
 # lxc container dhcp settings
-lxc_net_dhcp_range: 10.0.3.2,10.0.3.253
-lxc_net_dhcp_max: 253
-lxc_net_dhcp_config: ''
-lxc_net_dnsmasq_user: lxc-dnsmasq
-lxc_net_domain: ''
+lxc_dhcp_range: 10.0.3.2,10.0.3.253
+lxc_dhcp_max: 253
+lxc_dhcp_config: ''
+lxc_domain: 'lxc'

@@ -5,17 +5,19 @@
 - name: load OS specific variables (see ../vars/*)
   include_vars: "{{ ansible_os_family }}.yml"
 
-- name: install ubuntu ppa
+- name: install lxc and lxd ppa (ubuntu)
   apt_repository:
-    repo: 'ppa:ubuntu-lxc/lxc-stable'
+    repo: "{{ item }}"
     state: present
+  with_items:
+    - 'ppa:ubuntu-lxc/lxc-stable'
+    - 'ppa:ubuntu-lxc/lxd-stable'
   when: ansible_distribution == 'Ubuntu'
 
 - name: install packages
-  action: "{{ ansible_pkg_mgr }} pkg={{ item }} state={{ lxc_pkg_state }}"
-  with_items: lxc_packages
+  package: name={{ lxc_pkgs }} state={{ lxc_pkg_state }}
 
-- name: create missing directories in each lxc administrator account
+- name: create missing directories for each unprivileged users
   file:
     path: /home/{{ item[0] }}/{{ item[1] }}
     owner: "{{ item[0] }}"
@@ -26,7 +28,7 @@
     - "{{ lxc_users }}"
     - "{{ lxc_directories }}"
 
-- name: create missing files
+- name: touch missing files
   file:
     path: "{{ item }}"
     owner: root
@@ -67,32 +69,28 @@
     group: "{{ item }}"
   with_items: lxc_users
 
-- name: template /etc/lxc/default.conf (system-wide default container conf)
+- name: template system-wide default.conf, lxc.conf and lxc-usernet
   template:
-    src: default.conf.j2
-    dest: /etc/lxc/default.conf
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     backup: yes
     mode: 0644
     owner: root
     group: root
+  with_items:
+    - { src: default.conf.j2, dest: /etc/lxc/default.conf }
+    - { src: lxc.conf.j2, dest: /etc/lxc/lxc.conf }
+    - { src: lxc-usernet.j2, dest: /etc/lxc/lxc-usernet }
 
-- name: template /etc/lxc/lxc.conf (path and storage BE)
-  template:
-    src: lxc.conf.j2
-    dest: /etc/lxc/lxc.conf
-    backup: yes
-    mode: 0644
-    owner: root
-    group: root
-
-- name: template /etc/lxc/lxc-usernet (unprivileged user network administration file)
-  template:
-    src: lxc-usernet.j2
-    dest: /etc/lxc/lxc-usernet
-    backup: yes
-    mode: 0644
-    owner: root
-    group: root
+# - name: configure lxc-net on Ubuntu derivatives
+#   template:
+#     src: lxc-net.j2
+#     dest: /etc/default/lxc-net
+#     owner: root
+#     group: root
+#     mode: 0644
+#     backup: yes
+#   when: ansible_distribution == 'Ubuntu'
 
 # - name: add entry in dnsmasq.conf to allow DNS resolution
 #   lineinfile:
@@ -107,9 +105,6 @@
 # # fixme: allocate additional uids & and gids to a username
 # sudo usermod --add-subuids 100000-165536 username
 # sudo usermod --add-subgids 100000-165536 username
-
-# see config/init/common/lxc-net.in script inside lxc github repos for details
-# of lxcbr0 bridge instantiation.
 
 # - name: Ensure networking includes interfaces.d
 #   lineinfile:
