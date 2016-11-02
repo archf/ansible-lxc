@@ -38,16 +38,6 @@ After that, your are ready to spawn lxc containers. Check out my ansible-lxcm
 Those variables from `vars/*.{yml,json}` are loaded dynamically during task
 runtime using the `include_vars` module.
 
-Variables loaded from `vars/RedHat.yml`.
-
-```yaml
-lxc_pkgs:
-  - lxc
-  - lxc-extra
-  - lxc-templates
-
-```
-
 Variables loaded from `vars/Debian.yml`.
 
 ```yaml
@@ -60,6 +50,16 @@ lxc_pkgs:
   - python3-lxc
   - python-lxc
   # - lxd-tools
+
+```
+
+Variables loaded from `vars/RedHat.yml`.
+
+```yaml
+lxc_pkgs:
+  - lxc
+  - lxc-extra
+  - lxc-templates
 
 ```
 
