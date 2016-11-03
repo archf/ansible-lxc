@@ -1,0 +1,53 @@
+---
+
+# while we are doing this no mather the OS, we should expect unprivileged
+# containers only to work on Ubuntu derivatives.
+# see: https://www.flockport.com/lxc-and-lxd-support-across-distributions/
+- name: create missing directories for each unprivileged users
+  file:
+    path: /home/{{item[0].name}}/{{item[1]}}
+    owner: "{{item[0].name}}"
+    group: "{{item[0].name}}"
+    mode: 0755
+    state: directory
+  with_nested:
+    - "{{lxc_users}}"
+    - "{{lxc_directories}}"
+
+# This file is placed inside user home to allow creation of unprivileged
+# containers
+- name: template ~/.config/lxc/default.conf (user default container conf)
+  template:
+    src: user_default.conf.j2
+    dest: "/home/{{item.name}}/.config/lxc/default.conf"
+    backup: yes
+    mode: 0644
+    owner: "{{item.name}}"
+    group: "{{item.name}}"
+  with_items: "{{lxc_users}}"
+
+# This file is placed inside user home to allow creation of unprivileged
+# containers
+- name: template ~/.config/lxc/lxc.conf (lxc path and storage BE)
+  template:
+    src: lxc.conf.j2
+    dest: "/home/{{item.name}}/.config/lxc/lxc.conf"
+    backup: yes
+    mode: 0644
+    owner: "{{item.name}}"
+    group: "{{item.name}}"
+  with_items: "{{lxc_users}}"
+
+- name: template system-wide default.conf, lxc.conf and lxc-usernet
+  template:
+    src: lxc-usernet.j2
+    dest: /etc/lxc/lxc-usernet
+    backup: yes
+    mode: 0644
+    owner: root
+    group: root
+
+# # this is to run unprivileged containers
+# # fixme: allocate additional uids & and gids to a username
+# sudo usermod --add-subuids 100000-165536 username
+# sudo usermod --add-subgids 100000-165536 username

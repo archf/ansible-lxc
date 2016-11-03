@@ -1,6 +1,4 @@
-#
-# {{ ansible_managed }}
-#
+# {{ansible_managed}}
 
 # See man lxc.container.conf
 
@@ -60,20 +58,20 @@
 # assigned to the container.
 
 # network virtualization type
-lxc.network.type = {{ lxc_network_type }}
+lxc.network.type = {{lxc_network_type}}
 
 # specify the interface to be used for real network traffic
-lxc.network.link = {{ lxc_network_link }}
+lxc.network.link = {{lxc_network_link}}
 
 # specify an action to do for the network, up: activates the interface.
-lxc.network.flags = {{ lxc_network_flags }}
+lxc.network.flags = {{lxc_network_flags}}
 
 # the interface mac address is dynamically allocated by default to the virtual
 # interface, but in some cases, this is needed to resolve a mac address
 # conflict or to always have the same link-local ipv6 address. Any "x"
 # in address will be replaced by random value, this allows setting
 # hwaddr templates.
-lxc.network.hwaddr = {{ lxc_network_hwaddr }}
+lxc.network.hwaddr = {{lxc_network_hwaddr}}
 
 # values should match those found in /etc/subuid and /etc/subgid
 # those below are expected for the first user on a standard Ubuntu system

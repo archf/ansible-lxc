@@ -1,10 +1,8 @@
-
 ---
 
 lxc_pkgs:
   - lxc
-  - lxd
+  - lxc-dev
   - lxc-templates
   - python3-lxc
   - python-lxc
-  # - lxd-tools

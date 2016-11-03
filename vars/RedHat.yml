@@ -2,5 +2,8 @@
 
 lxc_pkgs:
   - lxc
-  - lxc-extra
+  - lxc-devel
   - lxc-templates
+  - lxc-doc
+  - libvirt-daemon-lxc
+  - libvirt-login-shell.x86_64

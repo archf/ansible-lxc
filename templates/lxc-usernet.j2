@@ -19,5 +19,4 @@
 #   type which the given user may attach to the given bridge,
 #   for instance 2.
 
-@adm {{ lxc_network_type|default('veth') }} {{
-lxc_network_link|default('virbr0') }} {{ lxc_iface_max_per_user|default('24') }}
+@adm {{lxc_network_type|default('veth')}} {{lxc_network_link|default('virbr0') }} {{ lxc_iface_max_per_user|default('24') }}

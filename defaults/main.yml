@@ -1,39 +1,51 @@
 ---
-# defaults file for ansible-lxc
 
+# Packages State.
 lxc_pkg_state: installed
 
-private_dir: "{{ playbook_dir }}/private"
+# private_dir: "{{playbook_dir}}/private"
 
-# upriviledged users directory to create
+# Upriviledged users directory to create prior to templating configuration
+# files.
 lxc_directories:
-  - '.local/share/lxc'
-  - '.local/share/lxcsnaps'
-  - '.cache/lxc'
-  - '.config/lxc'
+    - '.local/share/lxc'
+    - '.local/share/lxcsnaps'
+    - '.cache/lxc'
+    - '.config/lxc'
 
-# container defaults (defaults.conf)
-# /etc/lxc/default.conf | ~/.config/lxc/default.conf
-lxc_network_type: veth
-lxc_network_link: lxcbr0
-lxc_network_bridge_type: bridge
-lxc_network_flags: up
-lxc_network_hwaddr: '00:16:3e:xx:xx:xx'
-lxc_network_ipv4_gateway: auto
-lxc_network_ipv6_gateway: auto
+# LXC system defaults (lxc.conf)
+# PATHS: /etc/lxc/lxc.conf && ~/.config/lxc/lxc.conf
+lxc:
 
-# lxc.conf defaults
-# /etc/lxc/lxc.conf | ~/.config/lxc/lxc.conf
+  # Backend storage if different than file
+  lvm_vg_name: centos
+  lvm_thin_pool: LXDPool
 
-# backend storage
-# lxc_bdev_lvm_vg: lxc
-# location in which all containers are stored
-# lxc_lxcpath: /var/lib/lxc
-# path to the default container configuration
-# lxc_default_config: /etc/lxc/default.conf ||  ~/.config/lxc/default.conf
+  # Path to the containers
+  lxcpath: /var/lib/lxc
 
-# lxc-net defaults
-# lxc_bridge_port: none
+  # Path to the default container configuration file
+  default_config: /etc/lxc/default.conf
+
+# Container defaults (defaults.conf)
+# PATH: /etc/lxc/default.conf && ~/.config/lxc/default.conf
+lxc_default:
+
+  nic:
+    nictype: veth
+    link: lxcbr0
+    flags: up
+    hwaddr: '00:16:3e:xx:xx:xx'
+    ipv4_gateway: auto
+    ipv6_gateway: auto
+
+  bridge:
+    # native or openvswitch
+    driver: native
+
+# lxc-net
+
+# # lxc_bridge_port: none
 
 # lxc_use_bridge: yes
 # lxc_bridge: lxcbr0

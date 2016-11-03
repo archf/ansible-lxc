@@ -1,4 +1,4 @@
-# {{ ansible_managed }}
+# {{ansible_managed}}
 
 # See man lxc.container.conf
 
@@ -58,34 +58,34 @@
 # assigned to the container.
 
 # network virtualization type
-lxc.network.type = {{ lxc_network_type }}
+lxc.network.type = {{lxc_default.nic.nictype}}
 
-# specify the interface to be used for real network traffic
-lxc.network.link = {{ lxc_network_link }}
+# host device to be used for real network traffic
+lxc.network.link = {{lxc_default.nic.link}}
 
 # specify an action to do for the network, up: activates the interface.
-lxc.network.flags = {{ lxc_network_flags }}
+lxc.network.flags = {{lxc_default.nic.flags}}
 
 # the interface mac address is dynamically allocated by default to the virtual
 # interface, but in some cases, this is needed to resolve a mac address
 # conflict or to always have the same link-local ipv6 address. Any "x"
 # in address will be replaced by random value, this allows setting
 # hwaddr templates.
-lxc.network.hwaddr = {{ lxc_network_hwaddr }}
+lxc.network.hwaddr = {{lxc_default.nic.hwaddr}}
 
-{% if lxc_network_bridge_type == 'ovsbridge' %}
+{% if lxc_default.bridge.driver == 'ovsbridge' %}
 # custom ifupdown scripts to attach device to ovswitch
 lxc.network.script.up = /etc/lxc/ifup
 lxc.network.script.down = /etc/lxc/ifdown
-{% elif lxc_network_bridge_type == 'bridge' %}
+{% elif lxc_default.bridge.driver == 'native' %}
 #ipv4 and ipv6 address to use as the gateway inside the container
 #auto: take the primary address from the bridge interface
 #      (as specified by the lxc.network.link option)
 #       only available when using the veth and macvlan network types
 #       and when gateway device != openvswitch as you cannot combine
 #       this statemeent with a ifupdown script
-lxc.network.ipv4.gateway = {{ lxc_network_ipv4_gateway }}
-lxc.network.ipv6.gateway = {{ lxc_network_ipv6_gateway }}
+lxc.network.ipv4.gateway = {{lxc_default.nic.ipv4_gateway}}
+# lxc.network.ipv6.gateway = {{lxc_default.nic.ipv6_gateway}}
 {% endif %}
 
 {#

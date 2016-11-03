@@ -1,36 +1,46 @@
-# {{ ansible_managed }}
+# {{ansible_managed}}
 
 # This configuration file is used to set values such as default lookup paths
 # and storage backend settings for LXC.
+# See `man lxc.system.conf` or
+# https://github.com/lxc/lxc/blob/master/doc/lxc.system.conf
 
-# lxc.lxc_path: The location in which all containers are stored.
-{% if lxc_lxcpath is defined %}
-lxc.lxcpath = {{ lxc_lxcpath }}
-{% endif %}
+######################
+# CONFIGURATION PATHS
+######################
 
-# lxc.default_config: The path to the default container configuration.
-{% if lxc_default_config is defined %}
-lxc.default_config = {{ lxc_default_config }}
-{% endif %}
+# Path to the containers
+lxc.lxcpath = {{lxc_lxcpath|default(lxc['lxcpath'])}}
+
+# lxc.default_config: Path to the default container configuration.
+lxc.default_config = {{lxc_default_config|default(lxc['default_config'])}}
+
+#################
+# Control Groups
+#################
 
 # lxc.cgroup.used: Comma separated list of cgroup controllers to setup.
 #                  If none is specified, all available controllers will be used.
 {% if lxc_cgroup_use is defined %}
-lxc.cgroup.use = {{ lxc_cgroup_use }}
+lxc.cgroup.use = {{lxc_cgroup_use}}
 {% endif %}
 
 # lxc.cgroup.pattern: Format string used to generate the cgroup path
 #                     (e.g. lxc/%n).
 {% if lxc_cgroup_pattern is defined %}
-# lxc.cgroup.pattern = {{ lxc_cgroup_pattern }}
+# lxc.cgroup.pattern = {{lxc_cgroup_pattern}}
 {% endif %}
 
-# lxc.bdev.lvm.vg: Default LVM volume group name.
-{% if lxc_bdev_lvm_vg is defined %}
-lxc.bdev.lvm.vg = {{ lxc_bdev_lvm_vg }}
+##########
+# Storage
+##########
+
+# lxc.bdev.lvm.vg: LVM volume group to use for new containers
+{% if lxc.lvm_vg_name is defined %}
+lxc.bdev.lvm.vg = {{lxc_lvm_vg_name|default(lxc.lvm_vg_name)}}
 {% endif %}
 
-# lxc.bdev.lvm.thin_pool: Default LVM thin pool name.
-{% if lxc_bdev_lvm_thin_pool is defined %}
-lxc.bdev.lvm.thin_pool = {{ lxc_bdev_lvm_thin_pool }}
+# lxc.bdev.lvm.thin_pool: LVM thin pool to use for new containers
+{% if lxc.lvm_thin_pool_name is defined %}
+lxc.bdev.lvm.thin_pool = {{lxc_lvm_thin_pool_name|default(lxc.lvm_thin_pool_name)}}
 {% endif %}
